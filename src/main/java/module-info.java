@@ -4,6 +4,7 @@ module com.example.camera_demo {
     requires java.desktop;
     requires java.base;
     requires org.bytedeco.javacv;
+    requires javax.websocket.client.api;
 
 
     opens com.example.camera_demo to javafx.fxml;
