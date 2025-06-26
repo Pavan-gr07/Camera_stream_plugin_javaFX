@@ -1,46 +1,320 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
+<!--<?import javafx.scene.media.MediaView?>-->
 <?import javafx.scene.text.Font?>
 
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <VBox alignment="CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.camera_demo.CameraController">
     <children>
-        <!-- Camera Info Section -->
-        <VBox alignment="CENTER" spacing="5.0">
+        <!-- Status Bar -->
+        <HBox alignment="CENTER" spacing="10.0" style="-fx-background-color: #f0f0f0; -fx-padding: 5;">
             <children>
-                <Label fx:id="cameraInfoLabel" text="Camera Info">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                </Label>
-                <Label fx:id="cameraCountLabel" text="0 cameras available" />
-            </children>
-        </VBox>
-
-        <!-- Video Display -->
-        <ImageView fx:id="videoImageView" fitHeight="480.0" fitWidth="640.0" pickOnBounds="true" preserveRatio="true" />
-
-        <!-- Carousel Controls -->
-        <HBox fx:id="carouselControls" alignment="CENTER" spacing="20.0" visible="false">
-            <children>
-                <Button fx:id="prevButton" mnemonicParsing="false" text="◀ Previous Camera" />
-                <Button fx:id="nextButton" mnemonicParsing="false" text="Next Camera ▶" />
+                <Label fx:id="statusLabel" text="Status: Initializing..." style="-fx-font-weight: bold;" />
             </children>
         </HBox>
 
-        <!-- Status Section -->
-        <Label fx:id="statusLabel" text="Status: Initializing..." wrapText="true">
-            <font>
-                <Font size="12.0" />
-            </font>
-        </Label>
+        <!-- Main Tab Pane -->
+        <TabPane fx:id="mainTabPane" prefHeight="700.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE">
+
+            <!-- Live Stream Tab -->
+            <Tab text="Live Stream">
+                <content>
+                    <VBox alignment="CENTER" spacing="15.0">
+                        <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </padding>
+                        <children>
+                            <!-- Camera Info Section -->
+                            <VBox alignment="CENTER" spacing="5.0">
+                                <children>
+                                    <Label fx:id="cameraInfoLabel" text="Camera Info">
+                                        <font>
+                                            <Font name="System Bold" size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="cameraCountLabel" text="0 cameras available" />
+                                </children>
+                            </VBox>
+
+                            <!-- Main Content Area -->
+                            <HBox alignment="CENTER" spacing="20.0">
+                                <children>
+                                    <!-- Video Display Section -->
+                                    <VBox alignment="CENTER" spacing="10.0">
+                                        <children>
+                                            <!-- Video Display -->
+                                            <StackPane style="-fx-border-color: #cccccc; -fx-border-width: 2;">
+                                                <children>
+                                                    <ImageView fx:id="videoImageView" fitHeight="480.0" fitWidth="640.0" pickOnBounds="true" preserveRatio="true" />
+                                                </children>
+                                            </StackPane>
+
+                                            <!-- Carousel Controls -->
+                                            <HBox fx:id="carouselControls" alignment="CENTER" spacing="20.0" visible="false">
+                                                <children>
+                                                    <Button fx:id="prevButton" mnemonicParsing="false" text="◀ Previous Camera" prefWidth="150.0" />
+                                                    <Button fx:id="nextButton" mnemonicParsing="false" text="Next Camera ▶" prefWidth="150.0" />
+                                                </children>
+                                            </HBox>
+                                        </children>
+                                    </VBox>
+
+                                    <!-- PTZ Controls -->
+                                    <VBox fx:id="ptzControlsBox" alignment="CENTER" spacing="15.0" visible="false" minWidth="220.0" style="-fx-background-color: #f8f8f8; -fx-border-color: #cccccc; -fx-border-width: 1; -fx-border-radius: 5;">
+                                        <padding>
+                                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                        </padding>
+                                        <children>
+                                            <Label text="PTZ Controls" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+
+                                            <!-- Directional Controls -->
+                                            <VBox alignment="CENTER" spacing="10.0">
+                                                <children>
+                                                    <Label text="Pan / Tilt" style="-fx-font-size: 12px;" />
+                                                    <GridPane alignment="CENTER" hgap="5.0" vgap="5.0">
+                                                        <columnConstraints>
+                                                            <ColumnConstraints minWidth="60.0" />
+                                                            <ColumnConstraints minWidth="60.0" />
+                                                            <ColumnConstraints minWidth="60.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                            <RowConstraints minHeight="40.0" />
+                                                            <RowConstraints minHeight="40.0" />
+                                                            <RowConstraints minHeight="40.0" />
+                                                        </rowConstraints>
+                                                        <children>
+                                                            <Button fx:id="upButton" mnemonicParsing="false" text="▲" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="50.0" prefHeight="35.0" />
+                                                            <Button fx:id="leftButton" mnemonicParsing="false" text="◀" GridPane.columnIndex="0" GridPane.rowIndex="1" prefWidth="50.0" prefHeight="35.0" />
+                                                            <Button fx:id="homeButton" mnemonicParsing="false" text="⌂" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="50.0" prefHeight="35.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
+                                                            <Button fx:id="rightButton" mnemonicParsing="false" text="▶" GridPane.columnIndex="2" GridPane.rowIndex="1" prefWidth="50.0" prefHeight="35.0" />
+                                                            <Button fx:id="downButton" mnemonicParsing="false" text="▼" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="50.0" prefHeight="35.0" />
+                                                        </children>
+                                                    </GridPane>
+                                                </children>
+                                            </VBox>
+
+                                            <!-- Zoom Controls -->
+                                            <VBox alignment="CENTER" spacing="8.0">
+                                                <children>
+                                                    <Label text="Zoom" style="-fx-font-size: 12px;" />
+                                                    <HBox alignment="CENTER" spacing="10.0">
+                                                        <children>
+                                                            <Button fx:id="zoomOutButton" mnemonicParsing="false" text="−" prefWidth="50.0" prefHeight="35.0" style="-fx-font-size: 16px;" />
+                                                            <Button fx:id="zoomInButton" mnemonicParsing="false" text="+" prefWidth="50.0" prefHeight="35.0" style="-fx-font-size: 16px;" />
+                                                        </children>
+                                                    </HBox>
+                                                </children>
+                                            </VBox>
+
+                                            <!-- Speed Control -->
+                                            <VBox alignment="CENTER" spacing="8.0">
+                                                <children>
+                                                    <Label fx:id="speedLabel" text="Speed: 0.5" style="-fx-font-size: 12px;" />
+                                                    <Slider fx:id="speedSlider" min="0.1" max="1.0" value="0.5" showTickLabels="true" showTickMarks="true" majorTickUnit="0.3" minorTickCount="2" prefWidth="180.0" />
+                                                </children>
+                                            </VBox>
+                                        </children>
+                                    </VBox>
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
+                </content>
+            </Tab>
+
+            <!-- Recording Tab -->
+            <Tab text="Recordings">
+                <content>
+                    <VBox spacing="10.0">
+                        <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </padding>
+                        <children>
+                            <!-- Recording Path Section -->
+                            <VBox spacing="10.0">
+                                <children>
+                                    <Label text="Recording Management" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <children>
+                                            <Button fx:id="selectFolderButton" mnemonicParsing="false" text="Select Folder" prefWidth="120.0" />
+                                            <Label fx:id="recordingPathLabel" text="Recording Path: " style="-fx-font-size: 12px;" />
+                                        </children>
+                                    </HBox>
+                                </children>
+                            </VBox>
+
+                            <Separator />
+
+                            <!-- Main Recording Content -->
+                            <HBox spacing="15.0" VBox.vgrow="ALWAYS">
+                                <children>
+                                    <!-- Recording List -->
+                                    <VBox spacing="10.0" minWidth="250.0">
+                                        <children>
+                                            <Label text="Available Recordings" style="-fx-font-weight: bold;" />
+                                            <ListView fx:id="recordingListView" prefHeight="400.0" />
+                                        </children>
+                                    </VBox>
+
+                                    <!-- Video Player Section -->
+                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                        <children>
+                                            <Label text="Video Player" style="-fx-font-weight: bold;" />
+
+                                            <!-- Media View Container -->
+                                            <StackPane style="-fx-background-color: black; -fx-border-color: #cccccc; -fx-border-width: 2;" VBox.vgrow="ALWAYS">
+<!--                                                <children>-->
+<!--                                                    <MediaView fx:id="recordingMediaView" fitHeight="400.0" fitWidth="600.0" preserveRatio="true" />-->
+<!--                                                </children>-->
+                                            </StackPane>
+
+                                            <!-- Media Controls -->
+                                            <VBox spacing="10.0">
+                                                <children>
+                                                    <!-- Progress Bar -->
+                                                    <VBox spacing="5.0">
+                                                        <children>
+                                                            <Slider fx:id="progressSlider" min="0.0" max="100.0" value="0.0" />
+                                                            <Label fx:id="timeLabel" text="00:00 / 00:00" style="-fx-font-size: 12px;" />
+                                                        </children>
+                                                    </VBox>
+
+                                                    <!-- Control Buttons -->
+                                                    <HBox alignment="CENTER" spacing="15.0">
+                                                        <children>
+                                                            <Button fx:id="playButton" mnemonicParsing="false" text="▶ Play" prefWidth="80.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
+                                                            <Button fx:id="pauseButton" mnemonicParsing="false" text="⏸ Pause" prefWidth="80.0" style="-fx-background-color: #FF9800; -fx-text-fill: white;" />
+                                                            <Button fx:id="stopButton" mnemonicParsing="false" text="⏹ Stop" prefWidth="80.0" style="-fx-background-color: #f44336; -fx-text-fill: white;" />
+                                                        </children>
+                                                    </HBox>
+                                                </children>
+                                            </VBox>
+                                        </children>
+                                    </VBox>
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
+                </content>
+            </Tab>
+
+            <!-- Settings Tab -->
+            <Tab text="Settings">
+                <content>
+                    <VBox spacing="20.0">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                        <children>
+                            <Label text="Camera Settings" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+
+                            <!-- Camera Configuration -->
+                            <VBox spacing="15.0" style="-fx-background-color: #f8f8f8; -fx-border-color: #cccccc; -fx-border-width: 1; -fx-border-radius: 5;">
+                                <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                </padding>
+                                <children>
+                                    <Label text="Stream Quality" style="-fx-font-weight: bold;" />
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <children>
+                                            <Label text="Resolution:" />
+                                            <ComboBox prefWidth="150.0">
+                                                <items>
+                                                    <FXCollections fx:factory="observableArrayList">
+                                                        <String fx:value="640x480" />
+                                                        <String fx:value="1280x720" />
+                                                        <String fx:value="1920x1080" />
+                                                    </FXCollections>
+                                                </items>
+                                                <value>
+                                                    <String fx:value="640x480" />
+                                                </value>
+                                            </ComboBox>
+                                        </children>
+                                    </HBox>
+
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <children>
+                                            <Label text="Frame Rate:" />
+                                            <ComboBox prefWidth="150.0">
+                                                <items>
+                                                    <FXCollections fx:factory="observableArrayList">
+                                                        <String fx:value="15 FPS" />
+                                                        <String fx:value="30 FPS" />
+                                                        <String fx:value="60 FPS" />
+                                                    </FXCollections>
+                                                </items>
+                                                <value>
+                                                    <String fx:value="30 FPS" />
+                                                </value>
+                                            </ComboBox>
+                                        </children>
+                                    </HBox>
+                                </children>
+                            </VBox>
+
+                            <!-- Connection Settings -->
+                            <VBox spacing="15.0" style="-fx-background-color: #f8f8f8; -fx-border-color: #cccccc; -fx-border-width: 1; -fx-border-radius: 5;">
+                                <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                </padding>
+                                <children>
+                                    <Label text="Connection Settings" style="-fx-font-weight: bold;" />
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <children>
+                                            <Label text="WebSocket URL:" />
+                                            <TextField text="ws://localhost:8080" prefWidth="200.0" />
+                                        </children>
+                                    </HBox>
+
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <children>
+                                            <Label text="Timeout (seconds):" />
+                                            <Spinner min="1" max="60" initialValue="30" prefWidth="100.0" />
+                                        </children>
+                                    </HBox>
+
+                                    <CheckBox text="Auto-reconnect on connection loss" selected="true" />
+                                </children>
+                            </VBox>
+
+                            <!-- PTZ Settings -->
+                            <VBox spacing="15.0" style="-fx-background-color: #f8f8f8; -fx-border-color: #cccccc; -fx-border-width: 1; -fx-border-radius: 5;">
+                                <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                </padding>
+                                <children>
+                                    <Label text="PTZ Control Settings" style="-fx-font-weight: bold;" />
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <children>
+                                            <Label text="Default Speed:" />
+                                            <Slider min="0.1" max="1.0" value="0.5" showTickLabels="true" showTickMarks="true" majorTickUnit="0.3" prefWidth="200.0" />
+                                        </children>
+                                    </HBox>
+
+                                    <CheckBox text="Enable PTZ keyboard shortcuts" selected="true" />
+                                    <CheckBox text="Show PTZ controls by default" selected="false" />
+                                </children>
+                            </VBox>
+
+                            <!-- Action Buttons -->
+                            <HBox alignment="CENTER" spacing="15.0">
+                                <children>
+                                    <Button text="Save Settings" prefWidth="120.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
+                                    <Button text="Reset to Default" prefWidth="120.0" />
+                                    <Button text="Export Config" prefWidth="120.0" />
+                                    <Button text="Import Config" prefWidth="120.0" />
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
+                </content>
+            </Tab>
+        </TabPane>
     </children>
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
 </VBox>
